@@ -466,12 +466,12 @@
             btnText.innerText = "Generating Plan...";
             spinner.classList.remove('hidden');
 
-             try {
-                const res = await fetch('https://projectforge-backend.onrender.com/validate', {
-                 method: 'POST', 
-                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({abstract: txt})
-            });
+            try {
+                const res = await fetch('http://localhost:8000/roadmap', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({abstract: txt, duration: dur, tech_stack: stack})
+                });
                 
                 if(!res.ok) throw new Error();
                 const data = await res.json();

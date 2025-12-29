@@ -88,7 +88,6 @@
         }
         .logo i { color: var(--primary); font-size: 1.3rem; }
 
-        /* Home Link Button */
         .nav-home {
             text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
             padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
@@ -96,7 +95,6 @@
         }
         .nav-home:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Theme Toggle */
         .theme-toggle {
             background: transparent; border: 1px solid var(--border);
             color: var(--text-muted); padding: 8px; border-radius: 8px;
@@ -411,10 +409,17 @@
             spinner.classList.remove('hidden');
 
              try {
-                const res = await fetch('https://projectforge-backend.onrender.com/validate', {
+                // ✅ UPDATED URL TO /suggest
+                const res = await fetch('https://projectforge-backend.onrender.com/suggest', {
                  method: 'POST', 
                  headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({abstract: txt})
+                 // ✅ UPDATED PAYLOAD TO INCLUDE ALL FIELDS
+                 body: JSON.stringify({
+                    abstract: abstract,
+                    difficulty: diff,
+                    duration: dur,
+                    requirements: reqs
+                 })
             });
                 
                 if(!res.ok) throw new Error();
