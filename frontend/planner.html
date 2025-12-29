@@ -467,7 +467,8 @@
             spinner.classList.remove('hidden');
 
             try {
-                const res = await fetch('http://localhost:8000/roadmap', {
+                // ✅ UPDATED URL TO PRODUCTION RENDER BACKEND
+                const res = await fetch('https://projectforge-backend.onrender.com/roadmap', {
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({abstract: txt, duration: dur, tech_stack: stack})
