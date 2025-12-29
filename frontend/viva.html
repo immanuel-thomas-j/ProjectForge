@@ -308,12 +308,12 @@
             spinner.classList.remove('hidden');
 
             try {
-                const res = await fetch('http://localhost:8000/viva', {
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({abstract: txt})
-                });
-                
+                const res = await fetch('https://projectforge-backend.onrender.com/validate', {
+                 method: 'POST', 
+                 headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({abstract: txt})
+            });
+            
                 if(!res.ok) throw new Error();
                 const data = await res.json();
 
