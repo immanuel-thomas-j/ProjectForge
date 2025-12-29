@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectForge AI | Intelligent Dev Copilot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- DESIGN SYSTEM --- */
+        :root {
+            /* Light Theme (Default) */
+            --primary: #4F46E5;       
+            --primary-hover: #4338CA;
+            --bg-body: #F8FAFC;       
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;     
+            --text-muted: #64748B;    
+            --border: #E2E8F0;        
+            --blob-color-1: #E0E7FF;
+            --blob-color-2: #F3E8FF;
+            --card-icon-bg: #EEF2FF;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Dark Theme Overrides */
+        [data-theme="dark"] {
+            --primary: #6366F1;       
+            --primary-hover: #818CF8;
+            --bg-body: #020617;       
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #0F172A;
+            --text-main: #F8FAFC;     
+            --text-muted: #94A3B8;    
+            --border: #1E293B;        
+            --blob-color-1: rgba(79, 70, 229, 0.15);
+            --blob-color-2: rgba(124, 58, 237, 0.15);
+            --card-icon-bg: #1E293B;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- SCROLL ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+        .logo i { 
+            background: linear-gradient(135deg, var(--primary), #8B5CF6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.3rem;
+        }
+
+        /* Centered Nav Links */
+        .nav-center {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.95rem;
+            transition: color 0.2s; white-space: nowrap;
+        }
+        .nav-link:hover { color: var(--text-main); }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+        }
+        .theme-toggle:hover { color: var(--text-main); border-color: var(--text-muted); background: var(--bg-body); }
+
+        .nav-cta {
+            background: var(--text-main); color: var(--bg-body); padding: 8px 16px;
+            border-radius: 6px; font-weight: 600; font-size: 0.85rem;
+            text-decoration: none; transition: transform 0.2s; white-space: nowrap;
+        }
+        .nav-cta:hover { transform: translateY(-1px); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 90px 20px 70px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+            transition: background-color 0.3s ease;
+        }
+        .blob-1 { width: 400px; height: 400px; background: var(--blob-color-1); top: -100px; left: 50%; transform: translateX(-60%); }
+        .blob-2 { width: 300px; height: 300px; background: var(--blob-color-2); bottom: -50px; right: 15%; animation-delay: -5s; }
+
+        .hero-badge {
+            background: var(--bg-card); border: 1px solid var(--border); padding: 6px 14px;
+            border-radius: 50px; font-size: 0.8rem; color: var(--primary); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+        .hero-badge span { display: block; width: 6px; height: 6px; background: #22C55E; border-radius: 50%; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2); }
+
+        .hero h1 {
+            font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin: 0 auto 20px;
+            max-width: 800px; color: var(--text-main); letter-spacing: -0.03em;
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem; color: var(--text-muted); max-width: 580px;
+            margin: 0 auto 32px; font-weight: 400;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-buttons { 
+            display: flex; justify-content: center; gap: 12px; 
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .btn-large {
+            padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 1rem;
+            text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary); color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 12px -1px rgba(79, 70, 229, 0.3); }
+
+        .btn-secondary {
+            background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-secondary:hover { border-color: var(--text-muted); transform: translateY(-2px); }
+
+        /* --- STATS --- */
+        .stats-section {
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            background: var(--bg-card); padding: 24px 0; margin-top: 40px;
+            animation: fadeInUp 1s ease-out 0.8s backwards;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .stats-grid {
+            max-width: 900px; margin: 0 auto; display: flex; justify-content: space-around;
+            gap: 20px; text-align: center;
+        }
+        .stat-val { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+
+        /* --- FEATURES GRID --- */
+        .features-section {
+            padding: 80px 24px; max-width: 1100px; margin: 0 auto;
+        }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+        .section-header p { color: var(--text-muted); font-size: 1.05rem; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+            padding: 32px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; text-decoration: none; color: inherit;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-6px); 
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: var(--card-icon-bg); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover .card-icon { transform: scale(1.1); }
+        
+        .feature-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; flex-grow: 1; }
+        
+        .card-link {
+            margin-top: 24px; font-size: 0.9rem; font-weight: 600; color: var(--primary);
+            display: flex; align-items: center; gap: 6px; transition: gap 0.2s;
+        }
+        .feature-card:hover .card-link { gap: 10px; }
+
+        /* --- MEGA FOOTER --- */
+        .footer {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 80px 24px 40px; margin-top: 60px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .footer-grid {
+            max-width: 1100px; margin: 0 auto; display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+        }
+        
+        .footer-brand { display: flex; flex-direction: column; gap: 16px; }
+        .footer-brand .logo { font-size: 1.4rem; }
+        .footer-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; max-width: 300px; }
+        .social-links { display: flex; gap: 16px; margin-top: 8px; }
+        .social-link { color: var(--text-muted); font-size: 1.1rem; transition: color 0.2s; }
+        .social-link:hover { color: var(--primary); }
+
+        .footer-col h4 {
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--text-main); margin-bottom: 20px;
+        }
+        .footer-col a, .footer-col span {
+            display: block; color: var(--text-muted); text-decoration: none;
+            margin-bottom: 12px; font-size: 0.9rem; transition: color 0.2s;
+        }
+        .footer-col a:hover { color: var(--primary); }
+        
+        .tech-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--bg-body); padding: 6px 10px; border-radius: 6px;
+            font-size: 0.8rem; color: var(--text-main); margin-bottom: 10px;
+            width: fit-content; border: 1px solid var(--border); transition: all 0.2s;
+        }
+        .tech-badge:hover { border-color: var(--primary); }
+        .tech-badge i { color: var(--primary); }
+
+        .footer-bottom {
+            max-width: 1100px; margin: 60px auto 0; padding-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--text-muted); font-size: 0.9rem;
+        }
+
+        /* --- ANIMATIONS KEYFRAMES --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(20px, 20px); } }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .grid-container { grid-template-columns: 1fr; }
+            .nav-center { display: none; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .stats-grid { flex-direction: column; gap: 24px; }
+            .footer-bottom { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            
+            <div class="nav-center">
+                <a href="novelty.html" class="nav-link">Idea Validator</a>
+                <a href="suggester.html" class="nav-link">Stack Advisor</a>
+                <a href="planner.html" class="nav-link">Roadmap Planner</a>
+                <a href="viva.html" class="nav-link">Viva Defense</a>
+            </div>
+            
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="novelty.html" class="nav-cta">Start Building</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span></span> Intelligent Project Copilot
+            </div>
+            <h1>
+                Architect Your Vision <br>
+                <span class="text-gradient">With AI Precision.</span>
+            </h1>
+            <p>
+                Stop guessing. Start shipping. Validate your ideas, determine the perfect tech stack, and generate engineering roadmaps in seconds.
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="novelty.html" class="btn-large btn-primary">
+                    Start Building <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="guide.html" class="btn-large btn-secondary">
+                    How it Works
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-section reveal">
+        <div class="stats-grid">
+            <div>
+                <div class="stat-val">100M+</div>
+                <div class="stat-label">Data Points</div>
+            </div>
+            <div>
+                <div class="stat-val">Real-time</div>
+                <div class="stat-label">Market Validation</div>
+            </div>
+            <div>
+                <div class="stat-val">Gemini 2.5</div>
+                <div class="stat-label">Powered Engine</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="features-section">
+        <div class="section-header reveal">
+            <h2>The Engineering Suite</h2>
+            <p>A complete toolkit designed to accelerate your development lifecycle.</p>
+        </div>
+
+        <div class="grid-container">
+            
+            <a href="novelty.html" class="feature-card reveal">
+                <div class="card-icon"><i class="fa-solid fa-check-double"></i></div>
+                <h3>Novelty Validator</h3>
+                <p>Don't build in the dark. Cross-reference your idea against millions of GitHub repos and papers. Get a uniqueness score and market pivot suggestions.</p>
+                <div class="card-link">Validate Idea <i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+
+            <a href="planner.html" class="feature-card reveal">
+                <div class="card-icon" style="background:#ECFDF5; color:#059669;"><i class="fa-solid fa-timeline"></i></div>
+                <h3>Roadmap Generator</h3>
+                <p>Turn chaos into structure. Input your abstract and timeline, and get a week-by-week engineering plan tailored to your deadlines.</p>
+                <div class="card-link" style="color:#059669;">Create Plan <i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+
+            <a href="suggester.html" class="feature-card reveal">
+                <div class="card-icon" style="background:#FFF7ED; color:#EA580C;"><i class="fa-solid fa-layer-group"></i></div>
+                <h3>Stack Suggester</h3>
+                <p>React or Vue? SQL or NoSQL? Get 3 tailored tech stack options based on your specific project requirements and team skills.</p>
+                <div class="card-link" style="color:#EA580C;">Find Stack <i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+
+            <a href="viva.html" class="feature-card reveal">
+                <div class="card-icon" style="background:#FEF2F2; color:#DC2626;"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>Viva Defender</h3>
+                <p>Pre-empt the tough questions. Our AI acts as a strict external examiner to grill you on your architectural decisions and technical choices.</p>
+                <div class="card-link" style="color:#DC2626;">Start Prep <i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo"><i class="fa-solid fa-layer-group"></i> ProjectForge</a>
+                <p class="footer-desc">
+                    The all-in-one platform for students and developers to validate, plan, and ship ambitious software projects with confidence.
+                </p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <a href="novelty.html">Idea Validator</a>
+                <a href="planner.html">Roadmap Planner</a>
+                <a href="suggester.html">Stack Advisor</a>
+                <a href="viva.html">Viva Defense</a>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Powered By</h4>
+                <div class="tech-badge"><i class="fa-solid fa-bolt"></i> Gemini 2.5 Flash</div>
+                <div class="tech-badge"><i class="fa-brands fa-google"></i> Google Search API</div>
+                <div class="tech-badge"><i class="fa-brands fa-youtube"></i> YouTube Data API</div>
+                <div class="tech-badge"><i class="fa-brands fa-python"></i> FastAPI Backend</div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Hackathon</h4>
+                <a href="#">View Repository</a>
+                <a href="#">Live Demo</a>
+                <a href="team.html">Team Info</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // Theme Toggle Logic
+        const toggleBtn = document.getElementById('themeToggle');
+        const icon = toggleBtn.querySelector('i');
+        const html = document.documentElement;
+
+        // Check Local Storage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide | ProjectForge AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light Theme */
+            --bg-body: #F8FAFC;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --border: #E2E8F0;
+            --icon-bg: #EEF2FF;
+            --blob-color-1: #E0E7FF;
+            --blob-color-2: #F3E8FF;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0B1120;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --primary: #6366F1;
+            --primary-hover: #818CF8;
+            --border: #334155;
+            --icon-bg: #1E293B;
+            --blob-color-1: #1E1B4B;
+            --blob-color-2: #312E81;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--primary); font-size: 1.3rem; }
+
+        .nav-home {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-card); transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            margin-right: 16px;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary); color: var(--primary); background: var(--icon-bg);
+        }
+
+        /* --- GUIDE HERO --- */
+        .hero {
+            position: relative; text-align: center; padding: 80px 20px 60px;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .blob-1 { width: 300px; height: 300px; background: var(--blob-color-1); top: -50px; left: 50%; transform: translateX(-50%); }
+        
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em; color: var(--text-main); }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        /* --- STEPS LAYOUT --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; width: 100%; flex: 1; }
+
+        .step-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 40px; margin-bottom: 40px; display: flex; align-items: center; gap: 40px;
+            box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .step-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+
+        /* Alternate Layout */
+        .step-card:nth-child(even) { flex-direction: row-reverse; }
+
+        .step-icon-box {
+            flex-shrink: 0; width: 80px; height: 80px; background: var(--icon-bg);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: var(--primary); border: 1px solid var(--border);
+            position: relative;
+        }
+        .step-number {
+            position: absolute; top: -10px; right: -10px; background: var(--primary);
+            color: white; width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .step-content { flex-grow: 1; }
+        .step-content h3 { font-size: 1.5rem; font-weight: 700; margin: 0 0 12px 0; color: var(--text-main); }
+        .step-content p { color: var(--text-muted); margin-bottom: 20px; font-size: 1rem; }
+
+        .feature-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tag {
+            background: var(--bg-body); border: 1px solid var(--border); padding: 6px 12px;
+            border-radius: 50px; font-size: 0.85rem; color: var(--text-muted); font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .tag i { color: var(--primary); font-size: 0.8rem; }
+
+        .pro-tip {
+            background: var(--icon-bg); border-left: 4px solid var(--primary);
+            padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.9rem;
+            color: var(--text-main); font-style: italic;
+        }
+        .pro-tip strong { color: var(--primary); font-style: normal; text-transform: uppercase; font-size: 0.8rem; margin-right: 6px; }
+
+        /* --- CTA --- */
+        .cta-box {
+            text-align: center; padding: 80px 20px; margin-top: 40px;
+            background: radial-gradient(circle at center, var(--icon-bg) 0%, var(--bg-body) 70%);
+            border-top: 1px solid var(--border);
+        }
+        .btn-large {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--primary); color: white; padding: 16px 36px;
+            border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 1.1rem;
+            transition: all 0.2s; margin-top: 24px;
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+        }
+        .btn-large:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(79, 70, 229, 0.4); }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        @keyframes float { 0% { transform: translateX(-50%) translate(0, 0); } 100% { transform: translateX(-50%) translate(20px, 20px); } }
+
+        /* --- FOOTER --- */
+        .footer-compact {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 24px 0; margin-top: auto;
+        }
+        .footer-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .step-card { flex-direction: column !important; text-align: center; gap: 20px; padding: 30px; }
+            .feature-tags { justify-content: center; }
+            .pro-tip { text-align: left; }
+            .footer-container { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button class="theme-toggle" id="themeToggle"><i class="fa-solid fa-moon"></i></button>
+                <a href="index.html" class="nav-home"><i class="fa-solid fa-house"></i> Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="blob blob-1"></div>
+        <h1>Master the <span class="text-gradient">Engineering Suite</span></h1>
+        <p>A simple 4-step workflow to go from a vague idea to a fully planned project ready for execution.</p>
+    </div>
+
+    <div class="container">
+        
+        <div class="step-card reveal">
+            <div class="step-icon-box">
+                <i class="fa-solid fa-lightbulb"></i>
+                <div class="step-number">1</div>
+            </div>
+            <div class="step-content">
+                <h3>Validate Your Concept</h3>
+                <p>Start here. Don't waste time building something that already exists. Our engine checks your abstract against millions of repositories to score uniqueness.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fa-solid fa-check"></i> Novelty Score</span>
+                    <span class="tag"><i class="fa-solid fa-code-branch"></i> Pivot Ideas</span>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Be specific in your description. Instead of "Chat App", try "Encrypted chat app using quantum key distribution".
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card reveal">
+            <div class="step-icon-box">
+                <i class="fa-solid fa-layer-group"></i>
+                <div class="step-number">2</div>
+            </div>
+            <div class="step-content">
+                <h3>Choose Your Architecture</h3>
+                <p>Use the <strong>Stack Advisor</strong> to find the perfect tools. Whether you need a quick hackathon stack or a scalable production architecture, we curate the best options.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fa-solid fa-list-ul"></i> 3 Tailored Options</span>
+                    <span class="tag"><i class="fa-solid fa-copy"></i> One-Click Copy</span>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Mention your team's skill level (e.g., "Beginner in Python") to get more realistic suggestions.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card reveal">
+            <div class="step-icon-box">
+                <i class="fa-solid fa-timeline"></i>
+                <div class="step-number">3</div>
+            </div>
+            <div class="step-content">
+                <h3>Generate a Roadmap</h3>
+                <p>Turn your idea into a schedule. The <strong>Roadmap Generator</strong> breaks your project into weekly phases, complete with actionable tasks and video tutorials.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fa-solid fa-calendar-days"></i> Weekly Plan</span>
+                    <span class="tag"><i class="fa-brands fa-youtube"></i> Tutorials</span>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Copy the generated roadmap into your project's README.md file to impress judges instantly.
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card reveal">
+            <div class="step-icon-box">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div class="step-number">4</div>
+            </div>
+            <div class="step-content">
+                <h3>Prepare for Defense</h3>
+                <p>Ready to present? The <strong>Viva Defender</strong> acts as a strict external examiner. It predicts the tough questions you'll face and provides the perfect answers.</p>
+                <div class="feature-tags">
+                    <span class="tag"><i class="fa-solid fa-question"></i> Predicted Q&A</span>
+                    <span class="tag"><i class="fa-solid fa-graduation-cap"></i> Expert Answers</span>
+                </div>
+                <div class="pro-tip">
+                    <strong>Pro Tip:</strong> Use these questions to practice your pitch. If you can answer these, you can handle any judge.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="cta-box">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 10px;">Ready to Build?</h2>
+        <p style="color:var(--text-muted); font-size: 1.1rem; margin-bottom: 0;">Start your journey now with the Idea Validator.</p>
+        <a href="novelty.html" class="btn-large">
+            Start Building <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <footer class="footer-compact">
+        <div class="footer-container">
+            <span>© 2025 ProjectForge AI</span>
+            <div class="footer-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- SCROLL REVEAL ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // --- THEME LOGIC ---
+        const themeBtn = document.getElementById('themeToggle');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
+        
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+    </script>
+
+</body>
+</html>

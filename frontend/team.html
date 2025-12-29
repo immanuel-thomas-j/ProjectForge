@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Info | ProjectForge AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light Theme */
+            --bg-body: #F8FAFC;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --border: #E2E8F0;
+            --icon-bg: #EEF2FF;
+            --blob-color-1: #E0E7FF;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0B1120;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --primary: #6366F1;
+            --primary-hover: #818CF8;
+            --border: #334155;
+            --icon-bg: #1E293B;
+            --blob-color-1: #1E1B4B;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--primary); font-size: 1.3rem; }
+
+        .nav-home {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-card); transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            margin-right: 16px;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary); color: var(--primary); background: var(--icon-bg);
+        }
+
+        /* --- HERO --- */
+        .header-section {
+            text-align: center; padding: 80px 20px 60px; position: relative;
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.5;
+            width: 300px; height: 300px; background: var(--blob-color-1); top: -50px; left: 50%; transform: translateX(-50%);
+        }
+        
+        .header-section h1 { font-size: 3rem; font-weight: 800; margin-bottom: 16px; color: var(--text-main); letter-spacing: -0.02em; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header-section p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        /* --- TEAM GRID --- */
+        .container { max-width: 1100px; margin: 0 auto 60px; padding: 0 24px; width: 100%; flex: 1; }
+
+        .team-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px; justify-content: center;
+        }
+
+        .member-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 32px; text-align: center; position: relative; overflow: hidden;
+            box-shadow: var(--shadow-sm); transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .member-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+
+        .avatar-box {
+            width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%;
+            background: var(--icon-bg); display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: var(--primary); border: 3px solid var(--bg-card);
+            box-shadow: 0 0 0 2px var(--border); overflow: hidden; padding: 0;
+        }
+        
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .member-name { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        .member-role { font-size: 0.9rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; }
+        
+        .member-bio { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; }
+
+        .social-links { display: flex; justify-content: center; gap: 16px; }
+        .social-link {
+            width: 36px; height: 36px; border-radius: 50%; background: var(--bg-body);
+            border: 1px solid var(--border); color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .social-link:hover { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.1); }
+
+        /* --- MISSION SECTION --- */
+        .mission-box {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 40px; margin-top: 60px; text-align: center;
+        }
+        .mission-box h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; color: var(--text-main); }
+        .mission-box p { color: var(--text-muted); font-size: 1.05rem; max-width: 700px; margin: 0 auto; }
+
+        /* --- FOOTER --- */
+        .footer-compact {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 24px 0; margin-top: auto;
+        }
+        .footer-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .footer-container { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button class="theme-toggle" id="themeToggle"><i class="fa-solid fa-moon"></i></button>
+                <a href="index.html" class="nav-home"><i class="fa-solid fa-house"></i> Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header-section">
+        <div class="blob"></div>
+        <h1>Meet the <span class="text-gradient">Triple Coders</span></h1>
+        <p>The passionate engineering team behind ProjectForge AI, dedicated to helping developers ship faster.</p>
+    </div>
+
+    <div class="container">
+        
+        <div class="team-grid">
+            
+            <div class="member-card">
+                <div class="avatar-box">
+                    <img src="images/immanuel.jpg" alt="Immanuel Thomas J" class="avatar-img">
+                </div>
+                <h3 class="member-name">Immanuel Thomas J</h3>
+                <div class="member-role">Team Member</div>
+                <p class="member-bio">
+                    Passionate developer focused on building scalable solutions and solving complex problems with code.
+                </p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/immanuel-thomas-j/" target="_blank" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="avatar-box">
+                    <img src="images/jackson.png" alt="Jackson" class="avatar-img">
+                </div>
+                <h3 class="member-name">Jackson</h3>
+                <div class="member-role">Team Member</div>
+                <p class="member-bio">
+                    Enthusiastic coder with a knack for creating intuitive user interfaces and seamless digital experiences.
+                </p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/jackson-jp-5b3aa8315/" target="_blank" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+
+            <div class="member-card">
+                <div class="avatar-box">
+                    <img src="images/jenish.png" alt="Jenish" class="avatar-img">
+                </div>
+                <h3 class="member-name">Jenish</h3>
+                <div class="member-role">Team Member</div>
+                <p class="member-bio">
+                    Innovative thinker dedicated to leveraging AI and modern tech to drive impactful project results.
+                </p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/jenish-prasad-7a5b3a25a/" target="_blank" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mission-box">
+            <h2>Our Mission</h2>
+            <p>
+                We noticed that many developers struggle with the initial phase of a project: validation, architecture, and planning. ProjectForge was built to bridge that gap using the power of Generative AI, allowing builders to focus on what matters most—coding.
+            </p>
+        </div>
+
+    </div>
+
+    <footer class="footer-compact">
+        <div class="footer-container">
+            <span>© 2025 ProjectForge AI</span>
+            <div class="footer-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Logic
+        const themeBtn = document.getElementById('themeToggle');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
+        
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+    </script>
+
+</body>
+</html>

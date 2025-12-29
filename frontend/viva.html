@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Defender | ProjectForge AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light Theme */
+            --bg-body: #F8FAFC;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --border: #E2E8F0;
+            --icon-bg: #EEF2FF;
+            --input-bg: #F8FAFC;
+            --ans-bg: #EEF2FF;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0B1120;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --primary: #6366F1;
+            --primary-hover: #818CF8;
+            --border: #334155;
+            --icon-bg: #1E293B;
+            --input-bg: #0F172A;
+            --ans-bg: rgba(99, 102, 241, 0.1);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--primary); font-size: 1.3rem; }
+
+        /* Home Link Button */
+        .nav-home {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-card); transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            margin-right: 16px;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary); color: var(--primary); background: var(--icon-bg);
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; width: 100%; flex: 1; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 32px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* --- INPUT SECTION --- */
+        .input-header { margin-bottom: 24px; }
+        .input-header h2 { 
+            margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: var(--text-main);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .input-header h2 i { color: var(--primary); }
+        .input-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        textarea {
+            width: 100%; padding: 16px; border: 1px solid var(--border);
+            border-radius: 12px; font-family: inherit; font-size: 1rem;
+            background: var(--input-bg); transition: all 0.2s; color: var(--text-main);
+            min-height: 140px; resize: vertical; line-height: 1.6;
+        }
+        textarea:focus {
+            outline: none; border-color: var(--primary); background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary); color: white; border: none;
+            padding: 14px 24px; border-radius: 10px; width: 100%; cursor: pointer;
+            font-weight: 600; font-size: 1rem; transition: all 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* --- RESULTS (ACCORDION) --- */
+        .results-header {
+            font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 20px 0;
+        }
+
+        .qa-item {
+            margin-bottom: 16px; border: 1px solid var(--border); border-radius: 12px;
+            background: var(--bg-card); overflow: hidden; transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .qa-item:hover { border-color: var(--primary); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        
+        .question {
+            padding: 20px 24px; cursor: pointer; font-weight: 600; font-size: 1.05rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); transition: background 0.2s; color: var(--text-main);
+        }
+        .question:hover { background: var(--input-bg); }
+        .question i { color: var(--text-muted); transition: transform 0.3s ease; }
+        
+        .answer {
+            padding: 0 24px; max-height: 0; overflow: hidden; 
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+            color: var(--text-muted); line-height: 1.7; background: var(--ans-bg);
+            border-top: 1px solid transparent; font-size: 0.95rem;
+        }
+        
+        /* Active State */
+        .qa-item.active { border-color: var(--primary); }
+        .qa-item.active .question { color: var(--primary); }
+        .qa-item.active .question i { transform: rotate(180deg); color: var(--primary); }
+        .qa-item.active .answer { 
+            padding: 20px 24px 24px; max-height: 500px; 
+            border-top-color: var(--border); 
+        }
+
+        .answer strong { color: var(--primary); display: block; margin-bottom: 6px; }
+
+        /* --- UTILS --- */
+        .hidden { display: none; }
+        .spinner {
+            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- COMPACT FOOTER --- */
+        .footer-compact {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 24px 0; margin-top: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .footer-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 900px) { 
+            .footer-container { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="index.html" class="nav-home">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="input-header">
+                <h2><i class="fa-solid fa-shield-halved"></i> Viva Defender</h2>
+                <p>Prepare for your defense. Predict tough questions judges and experts will ask about your project.</p>
+            </div>
+            
+            <textarea id="input" placeholder="Paste your project abstract here..."></textarea>
+            
+            <button class="btn-primary" onclick="getQuestions()">
+                <span id="btnText">Generate Defense Questions</span> 
+                <div class="spinner hidden" id="spinner"></div>
+            </button>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="results-header">Predicted Examination Questions</div>
+            <div id="qaList"></div>
+        </div>
+    </div>
+
+    <footer class="footer-compact">
+        <div class="footer-container">
+            <span>© 2025 ProjectForge AI</span>
+            <div class="footer-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- THEME LOGIC ---
+        const themeBtn = document.getElementById('themeToggle');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // --- APP LOGIC ---
+        async function getQuestions() {
+            const txt = document.getElementById('input').value;
+            if(!txt) return alert("Please enter an abstract.");
+
+            const btn = document.querySelector('.btn-primary');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+
+            btn.disabled = true;
+            btnText.innerText = "Analyzing Project...";
+            spinner.classList.remove('hidden');
+
+            try {
+                const res = await fetch('http://localhost:8000/viva', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({abstract: txt})
+                });
+                
+                if(!res.ok) throw new Error();
+                const data = await res.json();
+
+                const list = document.getElementById('qaList');
+                list.innerHTML = data.questions.map((item, i) => `
+                    <div class="qa-item" onclick="toggle(${i})">
+                        <div class="question">
+                            <span>Q${i+1}: ${item.q}</span>
+                            <i class="fa-solid fa-chevron-down" id="icon-${i}"></i>
+                        </div>
+                        <div class="answer" id="ans-${i}">
+                            <strong><i class="fa-solid fa-check-circle"></i> Ideal Answer:</strong>
+                            ${item.a}
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('results').classList.remove('hidden');
+                
+                // FIXED SCROLLING
+                setTimeout(() => {
+                    const resultsElement = document.getElementById('results');
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const yOffset = -navbarHeight - 20; 
+                    const y = resultsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }, 100);
+
+            } catch(e) {
+                alert("Connection Failed. Ensure Backend is running.");
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Generate Defense Questions";
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function toggle(i) {
+            const el = document.querySelectorAll('.qa-item')[i];
+            el.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

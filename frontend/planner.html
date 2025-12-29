@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap Generator | ProjectForge AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light Theme */
+            --bg-body: #F8FAFC;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --border: #E2E8F0;
+            --icon-bg: #EEF2FF;
+            --input-bg: #F8FAFC;
+            --success: #10B981;
+            --success-bg: #ECFDF5;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0B1120;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --primary: #6366F1;
+            --primary-hover: #818CF8;
+            --border: #334155;
+            --icon-bg: #1E293B;
+            --input-bg: #0F172A;
+            --success: #34D399;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--primary); font-size: 1.3rem; }
+
+        /* Home Link Button */
+        .nav-home {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-card); transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            margin-right: 16px;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary); color: var(--primary); background: var(--icon-bg);
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; width: 100%; flex: 1; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* --- INPUT SECTION --- */
+        .input-header { margin-bottom: 24px; }
+        .input-header h2 { margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .input-header p { margin: 0 0 24px 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-main); }
+
+        textarea, select, input {
+            width: 100%; padding: 12px; border: 1px solid var(--border);
+            border-radius: 10px; background: var(--input-bg); margin-bottom: 20px;
+            font-family: inherit; font-size: 0.95rem; transition: all 0.2s;
+            color: var(--text-main);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        textarea:focus, select:focus, input:focus {
+            outline: none; border-color: var(--primary); background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary); color: white; border: none;
+            padding: 14px 24px; border-radius: 10px; width: 100%; cursor: pointer;
+            font-weight: 600; font-size: 1rem; transition: all 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+            margin-top: 10px;
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* --- RESULTS SECTION --- */
+        .header-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 0.9rem; font-weight: 700; color: var(--text-main);
+            display: flex; align-items: center; gap: 8px; margin: 0;
+        }
+        .section-title i { color: var(--primary); }
+
+        /* Small Copy Button */
+        .btn-copy-sm {
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .btn-copy-sm:hover { border-color: var(--primary); color: var(--primary); background: var(--icon-bg); }
+        .btn-copy-sm.success { border-color: var(--success); color: var(--success); background: var(--success-bg); }
+
+        .stack-list { display: flex; flex-wrap: wrap; gap: 12px; }
+        
+        .stack-tag {
+            background: var(--bg-card); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: 20px; font-size: 0.9rem;
+            font-weight: 500; color: var(--text-main); box-shadow: var(--shadow-sm);
+            display: flex; align-items: center; gap: 8px; transition: border-color 0.2s;
+        }
+        .stack-tag:hover { border-color: var(--primary); }
+        .stack-tag i { color: var(--primary); font-size: 0.9rem; }
+
+        /* Video Grid */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        
+        .video-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; text-decoration: none; color: inherit;
+            transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column;
+            box-shadow: var(--shadow-sm);
+        }
+        .video-card:hover {
+            transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-hover);
+        }
+        
+        .video-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #eee; }
+        
+        .video-content { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .video-title {
+            font-size: 0.9rem; font-weight: 600; margin-bottom: 6px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; line-height: 1.4; color: var(--text-main);
+        }
+        
+        .video-channel {
+            font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+        }
+
+        /* Timeline UI */
+        .timeline-container { padding-top: 10px; }
+        
+        .timeline-step { display: flex; gap: 24px; position: relative; padding-bottom: 40px; }
+        .timeline-step:last-child { padding-bottom: 0; }
+        
+        .timeline-marker-col { display: flex; flex-direction: column; align-items: center; min-width: 24px; }
+        
+        .marker-dot {
+            width: 18px; height: 18px; background: var(--primary);
+            border: 4px solid var(--bg-card); border-radius: 50%;
+            box-shadow: 0 0 0 1px var(--border); z-index: 2; flex-shrink: 0; margin-top: 24px;
+        }
+        
+        .marker-line {
+            width: 2px; background: var(--border); flex-grow: 1;
+            margin-top: -2px; margin-bottom: -24px;
+        }
+        .timeline-step:last-child .marker-line { display: none; }
+        
+        .timeline-content { flex-grow: 1; }
+        
+        .phase-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; box-shadow: var(--shadow-sm);
+            transition: transform 0.2s;
+        }
+        .phase-card:hover {
+            transform: translateY(-2px); border-color: var(--primary); box-shadow: var(--shadow-hover);
+        }
+        
+        .phase-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+            border-bottom: 1px solid var(--border); padding-bottom: 12px;
+        }
+        
+        .phase-title { font-weight: 700; color: var(--text-main); font-size: 1.1rem; margin: 0; }
+        
+        .week-badge {
+            background: var(--icon-bg); color: var(--primary); font-size: 0.8rem;
+            padding: 4px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;
+            border: 1px solid var(--border);
+        }
+        
+        .task-list {
+            padding-left: 20px; margin: 0; color: var(--text-muted);
+            line-height: 1.7; font-size: 0.95rem;
+        }
+        .task-list li { margin-bottom: 6px; }
+
+        /* --- UTILS --- */
+        .hidden { display: none; }
+        .spinner {
+            width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- COMPACT FOOTER --- */
+        .footer-compact {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 24px 0; margin-top: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .footer-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 900px) { 
+            .footer-container { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="index.html" class="nav-home">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="input-header">
+                <h2>Build Your Roadmap</h2>
+                <p>Enter your project idea and timeline to generate a step-by-step execution plan.</p>
+            </div>
+
+            <label>Project Description</label>
+            <textarea id="input" placeholder="E.g., A real-time chat application using WebSocket and Redis..."></textarea>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <label>Target Timeline</label>
+                    <select id="duration">
+                        <option>1 Month (Hackathon)</option>
+                        <option selected>3 Months (Quarterly Goal)</option>
+                        <option>6 Months (Full Scale)</option>
+                    </select>
+                </div>
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <label style="margin:0;">Preferred Tech Stack (Optional)</label>
+                        <a href="suggester.html" target="_blank" style="font-size:0.8rem; color:var(--primary); text-decoration:none; font-weight:500;">Need suggestions? <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                    <input type="text" id="tech_stack" placeholder="e.g. React, Node.js (Leave empty for AI)">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="getRoadmap()">
+                <span id="btnText">Generate Execution Plan</span> 
+                <div class="spinner hidden" id="spinner"></div>
+            </button>
+        </div>
+
+        <div id="results" class="hidden">
+            
+            <div class="card">
+                <div class="header-actions">
+                    <div class="section-title">
+                        <i class="fa-solid fa-toolbox"></i> Required Tools & Technologies
+                    </div>
+                    <button class="btn-copy-sm" onclick="copyStack(this)">
+                        <i class="fa-regular fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div id="stackList" class="stack-list"></div>
+            </div>
+
+            <div class="card" style="background: #FFF7ED; border-color: #FED7AA;">
+                <h3 style="margin: 0 0 20px 0; font-size: 1.1rem; color: #9A3412; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-brands fa-youtube" style="color: #FF0000;"></i> Recommended Tutorials
+                </h3>
+                <div id="videoList" class="video-grid"></div>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+                    <h3 style="margin:0; font-size: 1.25rem; color: var(--text-main); font-weight: 700;">Implementation Timeline</h3>
+                    <button class="btn-copy-sm" onclick="copyTimeline(this)">
+                        <i class="fa-regular fa-copy"></i> Copy Plan
+                    </button>
+                </div>
+                <div id="timeline" class="timeline-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-compact">
+        <div class="footer-container">
+            <span>© 2025 ProjectForge AI</span>
+            <div class="footer-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- THEME LOGIC ---
+        const themeBtn = document.getElementById('themeToggle');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // --- COPY FUNCTIONS ---
+        function copyStack(btn) {
+            const stackText = Array.from(document.querySelectorAll('.stack-tag'))
+                .map(el => el.innerText.trim())
+                .join(', ');
+            
+            navigator.clipboard.writeText(stackText).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('success');
+                }, 2000);
+            });
+        }
+
+        function copyTimeline(btn) {
+            let timelineText = "🚀 Project Roadmap:\n\n";
+            document.querySelectorAll('.phase-card').forEach(card => {
+                const phase = card.querySelector('.phase-title').innerText;
+                const week = card.querySelector('.week-badge').innerText;
+                const tasks = Array.from(card.querySelectorAll('li')).map(li => "  • " + li.innerText).join('\n');
+                timelineText += `[${week}] ${phase}\n${tasks}\n\n`;
+            });
+
+            navigator.clipboard.writeText(timelineText).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Plan Copied!`;
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('success');
+                }, 2000);
+            });
+        }
+
+        // --- APP LOGIC ---
+        async function getRoadmap() {
+            const txt = document.getElementById('input').value;
+            const dur = document.getElementById('duration').value;
+            const stack = document.getElementById('tech_stack').value;
+            
+            if(!txt) return alert("Please enter a project description.");
+
+            const btn = document.querySelector('.btn-primary');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+
+            btn.disabled = true;
+            btnText.innerText = "Generating Plan...";
+            spinner.classList.remove('hidden');
+
+            try {
+                const res = await fetch('http://localhost:8000/roadmap', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({abstract: txt, duration: dur, tech_stack: stack})
+                });
+                
+                if(!res.ok) throw new Error();
+                const data = await res.json();
+
+                // 1. Stack
+                document.getElementById('stackList').innerHTML = data.stack.map(s => 
+                    `<div class="stack-tag"><i class="fa-solid fa-code"></i> ${s}</div>`
+                ).join('');
+
+                // 2. Videos
+                if(data.tutorials && data.tutorials.length > 0) {
+                    document.getElementById('videoList').innerHTML = data.tutorials.map(v => `
+                        <a href="${v.link}" target="_blank" class="video-card">
+                            <img src="${v.thumbnail}" class="video-thumb" loading="lazy">
+                            <div class="video-content">
+                                <div class="video-title">${v.title}</div>
+                                <div class="video-channel"><i class="fa-solid fa-tv"></i> ${v.channel}</div>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    document.getElementById('videoList').innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem;">No video tutorials found. Check your API quota.</p>';
+                }
+
+                // 3. Timeline
+                document.getElementById('timeline').innerHTML = data.roadmap.map(step => `
+                    <div class="timeline-step">
+                        <div class="timeline-marker-col">
+                            <div class="marker-dot"></div>
+                            <div class="marker-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="phase-card">
+                                <div class="phase-header">
+                                    <h4 class="phase-title">${step.phase}</h4>
+                                    <span class="week-badge">${step.week}</span>
+                                </div>
+                                <ul class="task-list">
+                                    ${step.tasks.map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('results').classList.remove('hidden');
+                
+                // FIXED SCROLLING
+                setTimeout(() => {
+                    const resultsElement = document.getElementById('results');
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const yOffset = -navbarHeight - 20; 
+                    const y = resultsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }, 100);
+
+            } catch(e) {
+                alert("Connection Failed. Ensure Backend is running.");
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Generate Execution Plan";
+                spinner.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

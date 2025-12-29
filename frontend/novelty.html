@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Validator | ProjectForge AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light Theme (Default) */
+            --bg-body: #F8FAFC;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-card: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --border: #E2E8F0;
+            --icon-bg: #EEF2FF;
+            --input-bg: #F8FAFC;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-body: #0B1120;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --primary: #6366F1;
+            --primary-hover: #818CF8;
+            --border: #334155;
+            --icon-bg: #1E293B;
+            --input-bg: #0F172A;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 32px 32px;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .logo i { color: var(--primary); font-size: 1.3rem; }
+
+        /* Home Link Button */
+        .nav-home {
+            text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-card); transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary); color: var(--primary); background: var(--icon-bg);
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; width: 100%; flex: 1; }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* --- INPUT SECTION --- */
+        .input-header { margin-bottom: 24px; }
+        .input-header h2 { margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .input-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        textarea {
+            width: 100%; padding: 16px; border: 1px solid var(--border);
+            border-radius: 12px; font-family: inherit; font-size: 1rem;
+            background: var(--input-bg); transition: all 0.2s; color: var(--text-main);
+            min-height: 140px; resize: vertical; line-height: 1.6;
+        }
+        textarea:focus {
+            outline: none; border-color: var(--primary); background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary); color: white; border: none;
+            padding: 14px 24px; border-radius: 10px; font-weight: 600; font-size: 1rem;
+            cursor: pointer; width: 100%; transition: all 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-top: 24px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* --- RESULTS LAYOUT --- */
+        .split-layout {
+            display: grid; grid-template-columns: 1fr 340px; gap: 32px; margin-top: 40px;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        /* --- METRICS --- */
+        .metric-row {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;
+        }
+        
+        .metric-box {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .metric-label {
+            font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+        }
+        
+        .metric-score {
+            font-size: 1.8rem; font-weight: 800; color: var(--text-main);
+        }
+
+        /* --- MAIN ANALYSIS --- */
+        .analysis-card h3 { 
+            margin: 0 0 12px 0; font-size: 1.2rem; font-weight: 700; 
+            color: var(--text-main); text-align: left; padding: 0;
+        }
+        .analysis-card p {
+            color: var(--text-muted); line-height: 1.8; font-size: 1rem; margin: 0; text-align: left;
+        }
+
+        /* --- EVIDENCE LIST --- */
+        .evidence-header {
+            font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;
+        }
+        .evidence-link {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; background: var(--bg-body); border-radius: 8px;
+            color: var(--text-main); text-decoration: none; font-size: 0.9rem;
+            margin-bottom: 10px; transition: all 0.2s; border: 1px solid var(--border);
+        }
+        .evidence-link:hover {
+            border-color: var(--primary); transform: translateX(2px);
+        }
+        .evidence-link i { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* --- SIDEBAR (VARIANTS) --- */
+        .sidebar-title {
+            font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 16px 0;
+        }
+
+        .variant-card {
+            padding: 16px; border: 1px solid var(--border); border-radius: 12px;
+            margin-bottom: 12px; cursor: pointer; transition: all 0.2s;
+            background: var(--bg-card); position: relative; overflow: hidden;
+        }
+        .variant-card:hover {
+            border-color: var(--primary); transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        .variant-card.active {
+            border-color: var(--primary); background: var(--icon-bg);
+        }
+        .variant-card.active::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 4px; background: var(--primary);
+        }
+
+        .variant-card b { display: block; margin-bottom: 6px; font-size: 0.95rem; color: var(--text-main); }
+        .variant-card small { font-size: 0.85rem; color: var(--primary); font-weight: 500; }
+
+        /* --- UTILS --- */
+        .hidden { display: none; }
+        .spinner {
+            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- COMPACT FOOTER --- */
+        .footer-compact {
+            background: var(--bg-card); border-top: 1px solid var(--border);
+            padding: 24px 0; margin-top: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .footer-container {
+            max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 900px) { 
+            .split-layout { grid-template-columns: 1fr; }
+            .footer-container { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-layer-group"></i> ProjectForge
+            </a>
+            
+            <div style="display:flex; gap:16px; align-items:center;">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="index.html" class="nav-home">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="input-header">
+                <h2>Validate Your Idea</h2>
+                <p>Paste your project abstract below. Our AI scans millions of sources (GitHub, Arxiv) to check for novelty and generate pivot suggestions.</p>
+            </div>
+            
+            <textarea id="input" placeholder="E.g., A decentralized supply chain tracking system using Hyperledger Fabric and IoT sensors to prevent counterfeiting..."></textarea>
+            
+            <button class="btn-primary" onclick="runAnalysis()">
+                <span id="btnText">Run Analysis</span> 
+                <div class="spinner hidden" id="spinner"></div>
+            </button>
+        </div>
+
+        <div id="results" class="split-layout hidden">
+            
+            <div>
+                <div class="metric-row">
+                    <div class="metric-box">
+                        <div class="metric-label">Novelty Score</div>
+                        <div class="metric-score" id="scoreNov" style="color: #10B981;">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Technical Complexity</div>
+                        <div class="metric-score" id="scoreComp" style="color: #F59E0B;">-</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Feasibility</div>
+                        <div class="metric-score" id="scoreFeas" style="color: var(--primary);">-</div>
+                    </div>
+                </div>
+
+                <div class="card analysis-card" style="margin-bottom: 24px;">
+                    <h3 id="viewTitle">Original Analysis</h3>
+                    <p id="viewDesc">...</p>
+                </div>
+
+                <div class="card">
+                    <div class="evidence-header">
+                        <i class="fa-solid fa-globe" style="color: var(--primary);"></i> Similar Projects & Research
+                    </div>
+                    <div id="evidenceList"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="sidebar-title">AI Pivot Suggestions</div>
+                <div id="variantList"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-compact">
+        <div class="footer-container">
+            <span>© 2025 ProjectForge AI</span>
+            <div class="footer-links">
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- THEME LOGIC ---
+        const themeBtn = document.getElementById('themeToggle');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // --- APP LOGIC ---
+        let apiData = null;
+
+        async function runAnalysis() {
+            const txt = document.getElementById('input').value;
+            if(!txt) return alert("Please enter a project description.");
+
+            const btn = document.querySelector('.btn-primary');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+
+            btn.disabled = true;
+            btnText.innerText = "Analyzing Sources...";
+            spinner.classList.remove('hidden');
+            
+            try {
+                const res = await fetch('http://localhost:8000/validate', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({abstract: txt})
+                });
+                
+                if(!res.ok) throw new Error();
+                apiData = await res.json();
+                
+                document.getElementById('results').classList.remove('hidden');
+                renderSidebar();
+                loadOriginal();
+                
+                // FIXED SCROLLING
+                setTimeout(() => {
+                    const resultsElement = document.getElementById('results');
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                    const yOffset = -navbarHeight - 20; 
+                    const y = resultsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }, 100);
+
+            } catch(e) {
+                alert("Connection Failed. Ensure Backend is running.");
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Run Analysis";
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function renderSidebar() {
+            const list = document.getElementById('variantList');
+            list.innerHTML = `
+                <div class="variant-card active" onclick="loadOriginal()">
+                    <b>Original Idea</b>
+                    <small>Baseline Analysis</small>
+                </div>`;
+            
+            apiData.variants.forEach((v, i) => {
+                list.innerHTML += `
+                <div class="variant-card" onclick="loadVariant(${i})">
+                    <b>${v.title}</b>
+                    <small>Novelty Score: ${v.novelty}%</small>
+                </div>`;
+            });
+
+            const evList = document.getElementById('evidenceList');
+            evList.innerHTML = apiData.evidence.length 
+                ? apiData.evidence.map(e => `
+                    <a href="${e.link}" target="_blank" class="evidence-link">
+                        <span>${e.title}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>`).join('')
+                : "<span style='color:var(--text-muted); font-style:italic;'>No direct duplicates found.</span>";
+        }
+
+        function loadOriginal() {
+            updateView("Original Analysis", apiData.original.reason, apiData.original);
+            highlightCard(0); 
+        }
+
+        function loadVariant(i) {
+            const v = apiData.variants[i];
+            updateView(v.title, v.desc, {
+                novelty_score: v.novelty, complexity_score: v.complexity, feasibility_score: 90
+            });
+            highlightCard(i + 1); 
+        }
+
+        function updateView(title, desc, metrics) {
+            document.getElementById('viewTitle').innerText = title;
+            document.getElementById('viewDesc').innerText = desc;
+            
+            document.getElementById('scoreNov').innerText = metrics.novelty_score + "%";
+            document.getElementById('scoreFeas').innerText = metrics.feasibility_score + "%";
+            
+            const c = metrics.complexity_score;
+            const cEl = document.getElementById('scoreComp');
+            
+            if (typeof c === 'string') {
+                 cEl.innerText = c;
+            } else {
+                if(c < 40) { cEl.innerText = "Easy"; cEl.style.color = "#10B981"; }
+                else if(c < 75) { cEl.innerText = "Medium"; cEl.style.color = "#F59E0B"; }
+                else { cEl.innerText = "Hard"; cEl.style.color = "#EF4444"; }
+            }
+        }
+
+        function highlightCard(index) {
+            document.querySelectorAll('.variant-card').forEach((c, i) => {
+                if(i === index) c.classList.add('active');
+                else c.classList.remove('active');
+            });
+        }
+    </script>
+</body>
+</html>
