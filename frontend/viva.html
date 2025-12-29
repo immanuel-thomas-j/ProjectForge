@@ -86,7 +86,6 @@
         }
         .logo i { color: var(--primary); font-size: 1.3rem; }
 
-        /* Home Link Button */
         .nav-home {
             text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.9rem;
             padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
@@ -94,7 +93,6 @@
         }
         .nav-home:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Theme Toggle */
         .theme-toggle {
             background: transparent; border: 1px solid var(--border);
             color: var(--text-muted); padding: 8px; border-radius: 8px;
@@ -308,11 +306,12 @@
             spinner.classList.remove('hidden');
 
             try {
-                const res = await fetch('https://projectforge-backend.onrender.com/validate', {
-                 method: 'POST', 
-                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({abstract: txt})
-            });
+                // ✅ CHANGED URL FROM /validate TO /viva
+                const res = await fetch('https://projectforge-backend.onrender.com/viva', {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({abstract: txt})
+                });
             
                 if(!res.ok) throw new Error();
                 const data = await res.json();
