@@ -11,7 +11,7 @@
 
 **ProjectForge AI** is an intelligent engineering copilot designed to bridge the gap between "Ideation" and "Execution."
 
-For students and developers, the hardest part of building software isn't the coding—it's the planning. ProjectForge solves "blank canvas paralysis" by using **Google Gemini 1.5 Flash** to:
+For students and developers, the hardest part of building software isn't the coding—it's the planning. ProjectForge solves "blank canvas paralysis" by using **Google Gemini 2.5 Flash** to:
 1.  **Validate** idea uniqueness against real-world data.
 2.  **Architect** the perfect tech stack.
 3.  **Plan** the development lifecycle with curated tutorials.
@@ -56,7 +56,7 @@ This project leverages the full power of the Google AI Ecosystem:
 
 | Technology | Usage |
 | :--- | :--- |
-| **Gemini 1.5 Flash** | The core intelligence driving validation, planning, and logic reasoning. |
+| **Gemini 2.5 Flash** | The core intelligence driving validation, planning, and logic reasoning. |
 | **Google Generative AI SDK** | Python client used to interface with the Gemini models. |
 | **Custom Search JSON API** | Fetches real-time market data to validate project novelty. |
 | **YouTube Data API v3** | Curates specific video tutorials for the generated roadmaps. |
