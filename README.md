@@ -21,7 +21,7 @@ For students and developers, the hardest part of building software isn't the cod
 
 ## 🎥 Live Demo
 
-**🌐 Live Site:** [Click Here to View ProjectForge](https://your-vercel-link-here.app)  
+**🌐 Live Site:** [Click Here to View ProjectForge](https://projectforge-ai.vercel.app/)  
 **📺 Video Demo:** [Watch the Walkthrough](https://drive.google.com/file/d/1UxjSvpgqJ75M84OkCvQR1cnB-qfIyVWD/view?usp=sharing)
 
 ---
@@ -71,12 +71,3 @@ This project leverages the full power of the Google AI Ecosystem:
 * **Version Control:** Git & GitHub
 
 ---
-
-## ⚙️ Local Installation
-
-Follow these steps to run ProjectForge locally:
-
-### 1. Clone the Repository
-```bash
-git clone [https://github.com/YourUsername/ProjectForge.git](https://github.com/YourUsername/ProjectForge.git)
-cd ProjectForge
