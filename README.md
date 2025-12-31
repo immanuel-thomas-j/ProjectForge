@@ -71,3 +71,19 @@ This project leverages the full power of the Google AI Ecosystem:
 * **Version Control:** Git & GitHub
 
 ---
+
+## 👥 Team & Collaborators
+
+**The Triple Coders**
+
+| Team Member | GitHub Profile |
+| :--- | :--- |
+| **Immanuel Thomas J** | [@ImmanuelThomasJ](https://github.com/ImmanuelThomasJ) |
+| **Jackson** | [@Jackson](https://github.com/Jackson) |
+| **Jenish** | [@Jenish](https://github.com/Jenish) |
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
