@@ -78,9 +78,9 @@ This project leverages the full power of the Google AI Ecosystem:
 
 | Team Member | GitHub Profile |
 | :--- | :--- |
-| **Immanuel Thomas J** | [@ImmanuelThomasJ](https://github.com/ImmanuelThomasJ) |
-| **Jackson** | [@Jackson](https://github.com/Jackson) |
-| **Jenish** | [@Jenish](https://github.com/Jenish) |
+| **Immanuel Thomas J** | [@ImmanuelThomasJ](https://github.com/immanuel-thomas-j) |
+| **Jackson** | [@Jackson](https://github.com/Jacksonfio) |
+| **Jenish** | [@Jenish](https://github.com/THUNDERJ-7) |
 
 ---
 
